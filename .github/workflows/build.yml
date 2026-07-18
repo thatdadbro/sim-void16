@@ -9,7 +9,9 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Explicitly using 22.04 forces GitHub to allow the legacy Node environment needed by ZMK
+    runs-on: ubuntu-22.04
+    
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
@@ -34,8 +36,10 @@ jobs:
         run: |
           west build -b seeeduino_xiao -- -DZMK_CONFIG="${{ github.workspace }}/config"
 
-      - name: Upload Flashable UF2 Artifact
+      - name: Upload Flashable Binary Artifact
         uses: actions/upload-artifact@v4
         with:
           name: seeeduino_xiao-zmk
-          path: build/zephyr/zmk.uf2
+          path: |
+            build/zephyr/zmk.uf2
+            build/zephyr/zmk.bin
