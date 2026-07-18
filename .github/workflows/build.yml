@@ -7,11 +7,14 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# These two environment flags force GitHub to ignore Node version locks and build anyway
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
-    # Explicitly using 22.04 forces GitHub to allow the legacy Node environment needed by ZMK
-    runs-on: ubuntu-22.04
-    
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
@@ -36,7 +39,7 @@ jobs:
         run: |
           west build -b seeeduino_xiao -- -DZMK_CONFIG="${{ github.workspace }}/config"
 
-      - name: Upload Flashable Binary Artifact
+      - name: Upload Flashable Firmware Artifact
         uses: actions/upload-artifact@v4
         with:
           name: seeeduino_xiao-zmk
